@@ -7,6 +7,77 @@ One row = one complaint × component record. Features: complaint details and fla
 complaints came before it (same vehicle and component, same vehicle, same make and component), whether that
 vehicle and component had already been recalled, and the complaint narrative (TF-IDF).
 
+## Quick start
+
+**What's in this repo**
+
+| Path | Contents |
+|---|---|
+| `recall_pipeline/` | The supervised pipeline (loading, labels, features, models, evaluation) |
+| `tune_models.py` | Hyperparameter search |
+| `outputs/tuning/` | Saved tuning results: every trial per model, `best_params.json`, `tuned_test_results.csv` |
+| `eda_complaints_recalls.ipynb` | Exploratory charts |
+| `Unsupervised Learning/` | Unsupervised notebooks (run separately, in Google Colab) |
+| `requirements.txt` | Python libraries for the supervised pipeline |
+
+**1. One-time setup.** You need Python 3.11+ and Git. In a terminal (VS Code: *Terminal → New Terminal*):
+
+```powershell
+git clone https://github.com/mugdha1010/SIADS696_MilestoneII_Team16.git
+cd SIADS696_MilestoneII_Team16
+python -m venv .venv
+.venv\Scripts\activate          # Mac/Linux: source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+**2. Get the data.** The data files are too large for GitHub (1.5 GB and 300 MB), so they're shared separately.
+Download `complaints.csv` and `recalls.csv` from the team's shared drive:
+
+> **Shared drive folder:** _ADD LINK HERE_
+
+Create a folder named `data` in the top folder of the repo and put both files in it:
+
+```
+SIADS696_MilestoneII_Team16/
+├── data/
+│   ├── complaints.csv
+│   └── recalls.csv
+├── recall_pipeline/
+└── ...
+```
+
+`data/` (and the `cache/` folder the pipeline creates) are listed in `.gitignore`, so they're never uploaded.
+These are NHTSA's `FLAT_CMPL` and `FLAT_RCL_POST_2010` files with a header row of column names added. The original
+`.zip` files also work (see §1), but then pass their names in every command instead of the `.csv` names.
+
+**3. Run** from the top folder, with the environment active (`.venv\Scripts\activate`):
+
+```powershell
+# a) Quick test (~1-2 min once the data is cached): 50k complaints, two simple models
+python -m recall_pipeline.run --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 --sample 50000 --models dummy logreg
+
+# b) How well complaints match recalls (optional, see §2)
+python -m recall_pipeline.match_report --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01
+
+# c) Full model comparison (see §4)
+python -m recall_pipeline.run --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 --models dummy logreg linear_svm random_forest xgboost lightgbm hist_gb knn
+
+# d) Hyperparameter tuning (see §4)
+python tune_models.py --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 --models knn lightgbm random_forest hist_gb --n-iter 10
+```
+
+Results go to `outputs/` (see §4). On a laptop with 8 GB RAM, add `--sample 300000` to (c) and (d) and leave out
+`random_forest` / `knn` at first.
+
+**Tips**
+
+* The **first run takes several minutes** while it reads the 1.5 GB file; it then saves a cache in `cache/`, and
+  later runs start in seconds.
+* Run `git pull` before you start working, to get your teammates' latest changes.
+* If you see `UnicodeEncodeError ... '→'` (it happens when output is redirected to a file), run
+  `$env:PYTHONUTF8=1` once in that terminal (Mac/Linux: `export PYTHONUTF8=1`) and try again.
+* Don't use VS Code's ▶ "Run Python File" button on files in `recall_pipeline/`; use the commands above (see §3).
+
 ## 1. Data
 
 Use the **complete complaints file** (NHTSA `FLAT_CMPL`, all complaints since 1995) with `FLAT_RCL_POST_2010`, or the
@@ -77,22 +148,20 @@ hover over variables or inspect DataFrames in the *Variables* panel and the *Deb
 
 ## 4. Run
 
-```bash
-pip install pandas scikit-learn matplotlib joblib openpyxl xgboost lightgbm
-python -m recall_pipeline.run \
-    --complaints data/complaints.csv \
-    --recalls data/recalls.csv \
-    --min-date 2008-01-01 \
-    --horizon-days 730 \
-    --models dummy logreg linear_svm random_forest xgboost lightgbm hist_gb knn \
-    --sample 200000          # optional: random sample of complaints, for quicker experiments
+After the setup in *Quick start* (libraries come from `requirements.txt`):
+
+```powershell
+python -m recall_pipeline.run --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 --horizon-days 730 --models dummy logreg linear_svm random_forest xgboost lightgbm hist_gb knn --sample 200000
 ```
 
-Or from a notebook:
+`--sample 200000` is optional: a random sample of complaints, for quicker experiments. Leave it out to use all
+complaints.
+
+Or from a notebook (opened from the top folder):
 
 ```python
 from recall_pipeline import Config, load_data, build_task, train_and_evaluate
-cfg = Config(complaints_path="data/FLAT_CMPL.txt", recalls_path="data/FLAT_RCL_POST_2010.txt",
+cfg = Config(complaints_path="data/complaints.csv", recalls_path="data/recalls.csv",
              complaints_min_date="2008-01-01", horizon_days=730)
 complaints, recalls = load_data(cfg)                       # load + clean + harmonise components (cached)
 td = build_task("complaint", complaints, recalls, cfg)    # TaskData: .df, .num, .cat, .text, .date_col
@@ -104,9 +173,17 @@ Outputs go to `outputs/complaint/`: `model_comparison.csv`, `pr_curves.png`, `sp
 `top_features_<model>.csv`, and one fitted `model_<name>.joblib` per model (preprocessing included, so
 `.predict_proba(new_rows)` works directly). `outputs/config.json` records the run's settings.
 
-**Tuning.** `python tune_models.py --complaints ... --recalls ... --models knn lightgbm --n-iter 10` (in the top
-folder) searches each model's settings on the validation split and scores the best once on test; results in
-`outputs/tuning/`.
+**Tuning.** From the top folder:
+
+```powershell
+python tune_models.py --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 --models knn lightgbm random_forest hist_gb --n-iter 10
+```
+
+It tries `--n-iter` random settings per model on the validation split, then scores each model's best settings once
+on test. Add `--sample 300000` for a quicker run on a smaller laptop. Results go to `outputs/tuning/`:
+`trials_<model>.csv` (every setting tried and its validation score), `best_params.json` (the winning settings) and
+`tuned_test_results.csv` (test scores of the tuned models). **The results of our tuning runs are already saved in
+`outputs/tuning/` in this repo**; re-running overwrites them.
 
 **EDA.** `eda_complaints_recalls.ipynb` (top folder) has failure-analysis and complaint ↔ recall charts.
 
@@ -129,7 +206,7 @@ folder) searches each model's settings on the validation split and scores the be
 
 ## 6. Leakage safeguards (worth describing in your report)
 
-1. **Only later recalls count.** A recall dated on or before the complaint (or the quarter end) can't be the
+1. **Only later recalls count.** A recall dated on or before the complaint can't be the
    "future" outcome, so it becomes a feature (`prior_recall_same_group`) instead.
 2. **Coverage window.** Rows whose look-ahead isn't fully covered by the recall file are dropped (see §1).
 3. **Temporal split + purge gap.** Train on older rows and test on newer ones. Training rows must have their whole
