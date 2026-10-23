@@ -204,7 +204,7 @@ on test. Add `--sample 300000` for a quicker run on a smaller laptop. Results go
 | `debug_utils.py` | Shared options and printing for the step demos |
 | `run.py` | Orchestration and CLI |
 
-## 6. Leakage safeguards (worth describing in your report)
+## 6. Leakage safeguards 
 
 1. **Only later recalls count.** A recall dated on or before the complaint can't be the
    "future" outcome, so it becomes a feature (`prior_recall_same_group`) instead.
