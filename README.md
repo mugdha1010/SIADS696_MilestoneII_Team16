@@ -33,7 +33,7 @@ pip install -r requirements.txt
 **2. Get the data.** The data files are too large for GitHub (1.5 GB and 300 MB), so they're shared separately.
 Download `complaints.csv` and `recalls.csv` from the team's shared drive:
 
-> **Shared drive folder:** _ADD LINK HERE_
+> **Shared drive folder:** https://drive.google.com/drive/folders/1qeWRvTDdtBdkwpXX5Q3eNKSWNIJn9jjZ
 
 Create a folder named `data` in the top folder of the repo and put both files in it:
 
