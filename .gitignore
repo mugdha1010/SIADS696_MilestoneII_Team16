@@ -10,3 +10,13 @@ __pycache__/
 .venv/
 venv/
 .ipynb_checkpoints/
+
+# Older top-level version, kept locally only (the project now lives in SupervisedLearning_22Oct26/)
+/recall_pipeline/
+/tune_models.py
+/eda_complaints_recalls.ipynb
+/eda_complaints_recalls.py
+/outputs/
+/README.md
+/recall-pipeline-hyperparameter-tuning-README.md
+/.vscode/
