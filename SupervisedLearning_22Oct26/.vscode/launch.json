@@ -1,0 +1,138 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "1. Load + clean (data_io)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "recall_pipeline.data_io",
+      "cwd": "${workspaceFolder}",
+      "args": [
+        "--complaints",
+        "${workspaceFolder}/data/complaints.csv",
+        "--recalls",
+        "${workspaceFolder}/data/recalls.csv"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "2. Harmonise components",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "recall_pipeline.components",
+      "cwd": "${workspaceFolder}",
+      "args": [
+        "--complaints",
+        "${workspaceFolder}/data/complaints.csv",
+        "--recalls",
+        "${workspaceFolder}/data/recalls.csv"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "3. Complaint labels (labeling)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "recall_pipeline.labeling",
+      "cwd": "${workspaceFolder}",
+      "args": [
+        "--complaints",
+        "${workspaceFolder}/data/complaints.csv",
+        "--recalls",
+        "${workspaceFolder}/data/recalls.csv"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "4. Complaint features (features)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "recall_pipeline.features",
+      "cwd": "${workspaceFolder}",
+      "args": [
+        "--complaints",
+        "${workspaceFolder}/data/complaints.csv",
+        "--recalls",
+        "${workspaceFolder}/data/recalls.csv"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "5. Temporal split (split) - all rows",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "recall_pipeline.split",
+      "cwd": "${workspaceFolder}",
+      "args": [
+        "--complaints",
+        "${workspaceFolder}/data/complaints.csv",
+        "--recalls",
+        "${workspaceFolder}/data/recalls.csv",
+        "--max-rows",
+        "0"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "Match report",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "recall_pipeline.match_report",
+      "cwd": "${workspaceFolder}",
+      "args": [
+        "--complaints",
+        "${workspaceFolder}/data/complaints.csv",
+        "--recalls",
+        "${workspaceFolder}/data/recalls.csv",
+        "--min-date",
+        "2008-01-01"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "Full run - quick (sample, 2 models)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "recall_pipeline.run",
+      "cwd": "${workspaceFolder}",
+      "args": [
+        "--complaints",
+        "${workspaceFolder}/data/complaints.csv",
+        "--recalls",
+        "${workspaceFolder}/data/recalls.csv",
+        "--min-date",
+        "2008-01-01",
+        "--sample",
+        "100000",
+        "--models",
+        "dummy",
+        "logreg"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "Full run - all models",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "recall_pipeline.run",
+      "cwd": "${workspaceFolder}",
+      "args": [
+        "--complaints",
+        "${workspaceFolder}/data/complaints.csv",
+        "--recalls",
+        "${workspaceFolder}/data/recalls.csv",
+        "--min-date",
+        "2008-01-01"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    }
+  ]
+}
