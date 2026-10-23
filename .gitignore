@@ -3,7 +3,8 @@ data/
 cache/
 
 # Generated results
-outputs/
+outputs/*
+!outputs/tuning/
 
 # Python build files
 __pycache__/
