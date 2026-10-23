@@ -1,0 +1,12 @@
+# Large data files (over GitHub's 100 MB limit) - download separately, see README
+data/
+cache/
+
+# Python build files
+__pycache__/
+*.pyc
+
+# Environments and editor files
+.venv/
+venv/
+.ipynb_checkpoints/
