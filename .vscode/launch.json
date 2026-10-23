@@ -5,7 +5,7 @@
       "name": "1. Load + clean (data_io)",
       "type": "debugpy",
       "request": "launch",
-      "module": "recall_pipeline.data_io",
+      "module": "supervised_pipeline.data_io",
       "cwd": "${workspaceFolder}",
       "args": [
         "--complaints",
@@ -20,7 +20,7 @@
       "name": "2. Harmonise components",
       "type": "debugpy",
       "request": "launch",
-      "module": "recall_pipeline.components",
+      "module": "supervised_pipeline.components",
       "cwd": "${workspaceFolder}",
       "args": [
         "--complaints",
@@ -35,7 +35,7 @@
       "name": "3. Complaint labels (labeling)",
       "type": "debugpy",
       "request": "launch",
-      "module": "recall_pipeline.labeling",
+      "module": "supervised_pipeline.labeling",
       "cwd": "${workspaceFolder}",
       "args": [
         "--complaints",
@@ -50,7 +50,7 @@
       "name": "4. Complaint features (features)",
       "type": "debugpy",
       "request": "launch",
-      "module": "recall_pipeline.features",
+      "module": "supervised_pipeline.features",
       "cwd": "${workspaceFolder}",
       "args": [
         "--complaints",
@@ -65,7 +65,7 @@
       "name": "5. Temporal split (split) - all rows",
       "type": "debugpy",
       "request": "launch",
-      "module": "recall_pipeline.split",
+      "module": "supervised_pipeline.split",
       "cwd": "${workspaceFolder}",
       "args": [
         "--complaints",
@@ -82,7 +82,7 @@
       "name": "Match report",
       "type": "debugpy",
       "request": "launch",
-      "module": "recall_pipeline.match_report",
+      "module": "supervised_pipeline.match_report",
       "cwd": "${workspaceFolder}",
       "args": [
         "--complaints",
@@ -99,7 +99,7 @@
       "name": "Full run - quick (sample, 2 models)",
       "type": "debugpy",
       "request": "launch",
-      "module": "recall_pipeline.run",
+      "module": "supervised_pipeline.run",
       "cwd": "${workspaceFolder}",
       "args": [
         "--complaints",
@@ -121,7 +121,7 @@
       "name": "Full run - all models",
       "type": "debugpy",
       "request": "launch",
-      "module": "recall_pipeline.run",
+      "module": "supervised_pipeline.run",
       "cwd": "${workspaceFolder}",
       "args": [
         "--complaints",

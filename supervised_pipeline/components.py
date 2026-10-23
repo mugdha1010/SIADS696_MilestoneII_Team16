@@ -35,7 +35,7 @@ def add_component(complaints: pd.DataFrame, recalls: pd.DataFrame, level: int = 
 
 
 # ---------------------------------------------------------------------------------------------------
-# Demo:  python -m recall_pipeline.components --complaints data/complaints.csv --recalls data/recalls.csv
+# Demo:  python -m supervised_pipeline.components --complaints data/complaints.csv --recalls data/recalls.csv
 # ---------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
     from .data_io import load_complaints, load_recalls

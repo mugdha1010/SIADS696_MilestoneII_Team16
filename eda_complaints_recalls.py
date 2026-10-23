@@ -6,7 +6,7 @@
 # This notebook only **reads** data through the pipeline's loader (same cleaning and component harmonisation as
 # the models). It does not change the pipeline.
 #
-# Save it in the project's top folder (next to `README.md` and `recall_pipeline/`), choose your Python
+# Save it in the project's top folder (next to `README.md` and `supervised_pipeline/`), choose your Python
 # environment as the kernel, and run the cells top to bottom.
 #
 # 1. Setup and loading
@@ -32,9 +32,9 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 from scipy.stats import spearmanr
 
-# Make `import recall_pipeline` work when the notebook sits in the project folder (or a subfolder of it)
+# Make `import supervised_pipeline` work when the notebook sits in the project folder (or a subfolder of it)
 for p in [Path.cwd(), *Path.cwd().parents]:
-    if (p / "recall_pipeline").is_dir():
+    if (p / "supervised_pipeline").is_dir():
         sys.path.insert(0, str(p)); break
 
 # ---- chart style: one consistent, colour-blind-checked palette ----------------------
@@ -69,9 +69,9 @@ def hbar(series, title, xlabel, color=BLUE, fmt="{:,.0f}", subtitle=None):
     finish(ax, title, xlabel, subtitle=subtitle)
 
 # %%
-from recall_pipeline.config import Config
-from recall_pipeline.data_io import load_complaints, load_recalls
-from recall_pipeline.components import add_component
+from supervised_pipeline.config import Config
+from supervised_pipeline.data_io import load_complaints, load_recalls
+from supervised_pipeline.components import add_component
 
 cfg = Config(complaints_path=COMPLAINTS, recalls_path=RECALLS, complaints_min_date=MIN_DATE,
              debug_max_rows=MAX_ROWS, horizon_days=HORIZON_DAYS)
@@ -83,7 +83,7 @@ for col in ["CRASH", "FIRE", "POLICE_RPT_YN"]:
 c["injury_flag"] = (c["INJURED"].fillna(0) > 0).astype(int)
 c["death_flag"]  = (c["DEATHS"].fillna(0) > 0).astype(int)
 c["vehicle_age"] = (c["DATEA"].dt.year - c["YEARTXT"].astype(float)).clip(-1, 40)
-from recall_pipeline.labeling import make_key                       # same matching key as the models
+from supervised_pipeline.labeling import make_key                       # same matching key as the models
 KEYS = ["MAKETXT", "MODELTXT", "YEARTXT", "COMPONENT"]
 c["MMYC"], r["MMYC"] = make_key(c, KEYS), make_key(r, KEYS)
 campaigns = r.drop_duplicates("CAMPNO")            # one row per recall campaign
@@ -289,7 +289,7 @@ finish(ax, "Complaints in the 24 months around a group's first recall", "months 
 
 # %%
 # 4.5 For complaints that were followed by a recall: how long until it came?
-from recall_pipeline.labeling import recall_lookup
+from supervised_pipeline.labeling import recall_lookup
 lk = recall_lookup(c.assign(GROUP_KEY=c["MMYC"]), "DATEA", r, KEYS)
 wait = ((lk["next_recall"] - c["DATEA"]).dt.days / 30.44).dropna()
 fig, ax = plt.subplots()
@@ -321,8 +321,8 @@ finish(ax, f"% of complaints followed by a recall within {HORIZON_DAYS} days", N
 
 # %%
 # 4.7 Which engineered model features move with the label? (rank correlation, labelable rows only)
-from recall_pipeline.labeling import build_labels
-from recall_pipeline.features import engineer, feature_columns
+from supervised_pipeline.labeling import build_labels
+from supervised_pipeline.features import engineer, feature_columns
 df = engineer(build_labels(c.drop(columns=["MMYC"]), r, cfg), cfg)
 df = df[df["labelable"]]
 num, _, _ = feature_columns(df, cfg)

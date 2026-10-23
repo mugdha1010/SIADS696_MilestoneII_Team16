@@ -87,7 +87,7 @@ def build_preprocessor(kind: str, num, cat, text, cfg) -> ColumnTransformer:
 
 
 # ---------------------------------------------------------------------------------------------------
-# Demo:  python -m recall_pipeline.features --complaints data/complaints.csv --recalls data/recalls.csv
+# Demo:  python -m supervised_pipeline.features --complaints data/complaints.csv --recalls data/recalls.csv
 # ---------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
     from .debug_utils import debug_config, load_for_debug, show

@@ -13,7 +13,7 @@ vehicle and component had already been recalled, and the complaint narrative (TF
 
 | Path | Contents |
 |---|---|
-| `recall_pipeline/` | The supervised pipeline (loading, labels, features, models, evaluation) |
+| `supervised_pipeline/` | The supervised pipeline (loading, labels, features, models, evaluation) |
 | `tune_models.py` | Hyperparameter search |
 | `outputs/tuning/` | Saved tuning results: every trial per model, `best_params.json`, `tuned_test_results.csv` |
 | `eda_complaints_recalls.ipynb` | Exploratory charts |
@@ -42,7 +42,7 @@ SIADS696_MilestoneII_Team16/
 ├── data/
 │   ├── complaints.csv
 │   └── recalls.csv
-├── recall_pipeline/
+├── supervised_pipeline/
 └── ...
 ```
 
@@ -54,13 +54,13 @@ These are NHTSA's `FLAT_CMPL` and `FLAT_RCL_POST_2010` files with a header row o
 
 ```powershell
 # a) Quick test (~1-2 min once the data is cached): 50k complaints, two simple models
-python -m recall_pipeline.run --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 --sample 50000 --models dummy logreg
+python -m supervised_pipeline.run --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 --sample 50000 --models dummy logreg
 
 # b) How well complaints match recalls (optional, see §2)
-python -m recall_pipeline.match_report --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01
+python -m supervised_pipeline.match_report --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01
 
 # c) Full model comparison (see §4)
-python -m recall_pipeline.run --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 --models dummy logreg linear_svm random_forest xgboost lightgbm hist_gb knn
+python -m supervised_pipeline.run --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 --models dummy logreg linear_svm random_forest xgboost lightgbm hist_gb knn
 
 # d) Hyperparameter tuning (see §4)
 python tune_models.py --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 --models knn lightgbm random_forest hist_gb --n-iter 10
@@ -76,7 +76,7 @@ Results go to `outputs/` (see §4). On a laptop with 8 GB RAM, add `--sample 300
 * Run `git pull` before you start working, to get your teammates' latest changes.
 * If you see `UnicodeEncodeError ... '→'` (it happens when output is redirected to a file), run
   `$env:PYTHONUTF8=1` once in that terminal (Mac/Linux: `export PYTHONUTF8=1`) and try again.
-* Don't use VS Code's ▶ "Run Python File" button on files in `recall_pipeline/`; use the commands above (see §3).
+* Don't use VS Code's ▶ "Run Python File" button on files in `supervised_pipeline/`; use the commands above (see §3).
 
 ## 1. Data
 
@@ -105,7 +105,7 @@ them while reading with `--min-date 2008-01-01`. Rough guide for the complete fi
 ## 2. Check how well the files match (before training)
 
 ```bash
-python -m recall_pipeline.match_report --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01
+python -m supervised_pipeline.match_report --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01
 ```
 
 Prints a summary and writes CSVs to `outputs/match_report/`:
@@ -130,11 +130,11 @@ the top folder instead. Each core module has a demo at the bottom that prints wh
 
 | Step | Command | What it shows |
 |---|---|---|
-| 1 | `python -m recall_pipeline.data_io` | separator/header detection, raw vs cleaned rows, dtypes, date parsing, invalid model years, missing % |
-| 2 | `python -m recall_pipeline.components` | raw `COMPDESC`/`COMPNAME` → harmonised `COMPONENT`, aliases, labels only in one file |
-| 3 | `python -m recall_pipeline.labeling` | matching keys, coverage window, label counts, example positives and the recall behind one |
-| 4 | `python -m recall_pipeline.features` | engineered features, history counts over time, preprocessor output shape |
-| 5 | `python -m recall_pipeline.split --max-rows 0` | fit / validation / test date ranges and positives |
+| 1 | `python -m supervised_pipeline.data_io` | separator/header detection, raw vs cleaned rows, dtypes, date parsing, invalid model years, missing % |
+| 2 | `python -m supervised_pipeline.components` | raw `COMPDESC`/`COMPNAME` → harmonised `COMPONENT`, aliases, labels only in one file |
+| 3 | `python -m supervised_pipeline.labeling` | matching keys, coverage window, label counts, example positives and the recall behind one |
+| 4 | `python -m supervised_pipeline.features` | engineered features, history counts over time, preprocessor output shape |
+| 5 | `python -m supervised_pipeline.split --max-rows 0` | fit / validation / test date ranges and positives |
 
 By default each demo reads `data/complaints.csv` and `data/recalls.csv` and keeps the **first 100,000
 complaints received from 2010-01-01**, so it finishes quickly even with the 1.5 GB file. Options:
@@ -151,7 +151,7 @@ hover over variables or inspect DataFrames in the *Variables* panel and the *Deb
 After the setup in *Quick start* (libraries come from `requirements.txt`):
 
 ```powershell
-python -m recall_pipeline.run --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 --horizon-days 730 --models dummy logreg linear_svm random_forest xgboost lightgbm hist_gb knn --sample 200000
+python -m supervised_pipeline.run --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 --horizon-days 730 --models dummy logreg linear_svm random_forest xgboost lightgbm hist_gb knn --sample 200000
 ```
 
 `--sample 200000` is optional: a random sample of complaints, for quicker experiments. Leave it out to use all
@@ -160,7 +160,7 @@ complaints.
 Or from a notebook (opened from the top folder):
 
 ```python
-from recall_pipeline import Config, load_data, build_task, train_and_evaluate
+from supervised_pipeline import Config, load_data, build_task, train_and_evaluate
 cfg = Config(complaints_path="data/complaints.csv", recalls_path="data/recalls.csv",
              complaints_min_date="2008-01-01", horizon_days=730)
 complaints, recalls = load_data(cfg)                       # load + clean + harmonise components (cached)

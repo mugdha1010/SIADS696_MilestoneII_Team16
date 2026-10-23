@@ -26,13 +26,13 @@ from sklearn.base import clone
 from sklearn.metrics import average_precision_score
 from sklearn.model_selection import ParameterSampler
 
-from recall_pipeline.config import Config
-from recall_pipeline.evaluate import best_f1_threshold, evaluate
-from recall_pipeline.features import build_preprocessor
-from recall_pipeline.models import get_model
-from recall_pipeline.run import load_data
-from recall_pipeline.split import temporal_split
-from recall_pipeline.tasks import build_task
+from supervised_pipeline.config import Config
+from supervised_pipeline.evaluate import best_f1_threshold, evaluate
+from supervised_pipeline.features import build_preprocessor
+from supervised_pipeline.models import get_model
+from supervised_pipeline.run import load_data
+from supervised_pipeline.split import temporal_split
+from supervised_pipeline.tasks import build_task
 
 # Search spaces: distributions are sampled `--n-iter` times per model.
 # "pw" in scale_pos_weight lists is replaced by the real negative/positive ratio of the fit split.

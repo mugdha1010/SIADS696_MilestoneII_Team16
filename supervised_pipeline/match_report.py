@@ -1,6 +1,6 @@
 """How well do the complaint and recall files line up? Run this BEFORE training.
 
-    python -m recall_pipeline.match_report --complaints data/complaints.csv --recalls data/recalls.csv
+    python -m supervised_pipeline.match_report --complaints data/complaints.csv --recalls data/recalls.csv
 
 Writes CSVs to outputs/match_report/ and prints a summary:
   1. coverage  - date ranges of both files and their overlap

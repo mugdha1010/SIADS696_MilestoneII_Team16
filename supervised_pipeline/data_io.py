@@ -151,7 +151,7 @@ def load_recalls(cfg) -> pd.DataFrame:
 
 
 # ---------------------------------------------------------------------------------------------------
-# Demo:  python -m recall_pipeline.data_io --complaints data/complaints.csv --recalls data/recalls.csv
+# Demo:  python -m supervised_pipeline.data_io --complaints data/complaints.csv --recalls data/recalls.csv
 # ---------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
     from .debug_utils import debug_config, show

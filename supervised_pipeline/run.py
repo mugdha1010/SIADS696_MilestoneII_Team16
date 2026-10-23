@@ -1,6 +1,6 @@
 """End-to-end orchestration:  load → components → task table → split → train → evaluate.
 
-    python -m recall_pipeline.run --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01
+    python -m supervised_pipeline.run --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01
 """
 import argparse
 import json

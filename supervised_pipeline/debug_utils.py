@@ -1,12 +1,12 @@
 """Shared helpers for the step-by-step demos at the bottom of each module.
 
-Run any step from the project's top folder (the one containing `recall_pipeline/`):
+Run any step from the project's top folder (the one containing `supervised_pipeline/`):
 
-    python -m recall_pipeline.data_io      # 1. read + clean
-    python -m recall_pipeline.components   # 2. harmonise component labels
-    python -m recall_pipeline.labeling     # 3. complaint-level labels
-    python -m recall_pipeline.features     # 4. complaint-level features + preprocessing
-    python -m recall_pipeline.split        # 5. temporal train / validation / test split
+    python -m supervised_pipeline.data_io      # 1. read + clean
+    python -m supervised_pipeline.components   # 2. harmonise component labels
+    python -m supervised_pipeline.labeling     # 3. complaint-level labels
+    python -m supervised_pipeline.features     # 4. complaint-level features + preprocessing
+    python -m supervised_pipeline.split        # 5. temporal train / validation / test split
 
 Each step accepts:  --complaints PATH  --recalls PATH  --max-rows N  --min-date YYYY-MM-DD
 By default it reads data/complaints.csv and data/recalls.csv and keeps the first 100,000 complaints

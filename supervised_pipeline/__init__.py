@@ -1,6 +1,6 @@
 """Complaint → recall prediction pipeline.
 
-Imports are lazy so that `python -m recall_pipeline.<module>` runs each step cleanly on its own.
+Imports are lazy so that `python -m supervised_pipeline.<module>` runs each step cleanly on its own.
 """
 import importlib
 
@@ -20,4 +20,4 @@ def __getattr__(name):
             if m == modname:             # 'run' submodule attribute with the run() function
                 globals()[k] = getattr(module, k)
         return globals()[name]
-    raise AttributeError(f"module 'recall_pipeline' has no attribute '{name}'")
+    raise AttributeError(f"module 'supervised_pipeline' has no attribute '{name}'")

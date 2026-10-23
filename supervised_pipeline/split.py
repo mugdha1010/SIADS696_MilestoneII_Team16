@@ -27,7 +27,7 @@ def describe_split(fit, val, test, date_col="DATEA"):
 
 
 # ---------------------------------------------------------------------------------------------------
-# Demo:  python -m recall_pipeline.split --complaints data/complaints.csv --recalls data/recalls.csv --max-rows 0
+# Demo:  python -m supervised_pipeline.split --complaints data/complaints.csv --recalls data/recalls.csv --max-rows 0
 # ---------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
     from .debug_utils import debug_config, load_for_debug, show
