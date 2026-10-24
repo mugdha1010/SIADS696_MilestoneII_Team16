@@ -14,11 +14,11 @@ vehicle and component had already been recalled, and the complaint narrative (TF
 | Path | Contents |
 |---|---|
 | `supervised_pipeline/` | The supervised pipeline (loading, labels, features, models, evaluation) |
-| `tune_models.py` | Hyperparameter search |
+| `tune_models.py` | Hyperparameter tuning |
 | `outputs/tuning/` | Saved tuning results: every trial per model, `best_params.json`, `tuned_test_results.csv` |
 | `eda_complaints_recalls.ipynb` | Exploratory charts |
-| `Unsupervised Learning/` | Unsupervised notebooks (run separately, in Google Colab) |
-| `requirements.txt` | Python libraries for the supervised pipeline |
+| `Unsupervised Learning/` | Unsupervised notebooks (run separately, in Google Colab or locally) |
+| `requirements.txt` | Python libraries for the supervised and unsupervised models |
 
 **1. One-time setup.** You need Python 3.11+ and Git. In a terminal (VS Code: *Terminal → New Terminal*):
 
