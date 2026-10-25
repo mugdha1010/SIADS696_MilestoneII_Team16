@@ -47,8 +47,7 @@ SIADS696_MilestoneII_Team16/
 ```
 
 `data/` (and the `cache/` folder the pipeline creates) are listed in `.gitignore`, so they're never uploaded.
-These are NHTSA's `FLAT_CMPL` and `FLAT_RCL_POST_2010` files with a header row of column names added. The original
-`.zip` files also work (see §1), but then pass their names in every command instead of the `.csv` names.
+These are NHTSA's `FLAT_CMPL` and `FLAT_RCL_POST_2010` files with a header row of column names added.
 
 **3. Run** from the top folder, with the environment active (`.venv\Scripts\activate`):
 
@@ -56,36 +55,34 @@ These are NHTSA's `FLAT_CMPL` and `FLAT_RCL_POST_2010` files with a header row o
 # a) Quick test (~1-2 min once the data is cached): 50k complaints, two simple models
 python -m supervised_pipeline.run --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 --sample 50000 --models dummy logreg
 
-# b) How well complaints match recalls (optional, see §2)
+# b) How well complaints match recalls (optional, see #2 "Check how well the files match" below)
 python -m supervised_pipeline.match_report --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01
 
-# c) Full model comparison (see §4)
-python -m supervised_pipeline.run --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 --models dummy logreg linear_svm random_forest xgboost lightgbm hist_gb knn
+# c) Full model comparison (see #4 "Run" below)
+python -m supervised_pipeline.run --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 --models dummy logreg linear_svm random_forest lightgbm hist_gb knn
 
-# d) Hyperparameter tuning (see §4)
+# d) Hyperparameter tuning (see #4 "Run" (tuning) below)
 python tune_models.py --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 --models knn lightgbm random_forest hist_gb --n-iter 10
 ```
 
-Results go to `outputs/` (see §4). On a laptop with 8 GB RAM, add `--sample 300000` to (c) and (d) and leave out
+Results go to `outputs/` (see #4 "Run" below). On a laptop with 8 GB RAM, add `--sample 300000` to (c) and (d) and leave out
 `random_forest` / `knn` at first.
 
 **Tips**
 
 * The **first run takes several minutes** while it reads the 1.5 GB file; it then saves a cache in `cache/`, and
   later runs start in seconds.
-* Run `git pull` before you start working, to get your teammates' latest changes.
 * If you see `UnicodeEncodeError ... '→'` (it happens when output is redirected to a file), run
   `$env:PYTHONUTF8=1` once in that terminal (Mac/Linux: `export PYTHONUTF8=1`) and try again.
-* Don't use VS Code's ▶ "Run Python File" button on files in `supervised_pipeline/`; use the commands above (see §3).
+* Don't use VS Code's ▶ "Run Python File" button on files in `supervised_pipeline/`; use the commands above (see #3 "Explore and debug each step" below).
 
 ## 1. Data
 
-Use the **complete complaints file** (NHTSA `FLAT_CMPL`, all complaints since 1995) with `FLAT_RCL_POST_2010`, or the
-yearly `COMPLAINTS_RECEIVED_*` files covering 2010–2024. The loader accepts any of these as-is:
+Use the **complete complaints file** (NHTSA `FLAT_CMPL`, all complaints since 1995) with `FLAT_RCL_POST_2010`:
 
 * NHTSA's raw tab-delimited `.txt` (no header row), or the downloaded `.zip` directly, without unzipping;
-* a `.csv` / `.tsv` with a header row (e.g. one you added column names to);
-* `.xlsx`, for small files only (Excel can't hold more than ~1M rows).
+* a `.csv` / `.tsv` with a header row;
+* Shared drive https://drive.google.com/drive/folders/1whCHsuR-tqLq3GS0tAFQcSIqAmU0Dlc4 contains df_complaints_raw.csv and df_recalls_raw.csv. Use these files directly for running supervised and unsupervised notebooks. 
 
 It reads big files in 200k-row chunks and keeps only the 28 columns the pipeline uses. Repeated spaces are
 collapsed, and repetitive text columns are stored as categories, so a 1.5 GB file fits in a few GB of RAM. The
@@ -117,7 +114,7 @@ Prints a summary and writes CSVs to `outputs/match_report/`:
 | `timing.csv` | Every complaint classified as: recall within the horizon after it (**the positive labels**), recall later than the horizon, recall only before it, or no matching recall. The `labelable_complaints` column is the training/test pool |
 | `recall_precedence.csv` | Of the recalls the complaint file can "see", how many had a matching complaint in the horizon before them. This is the ceiling on how many recalls complaints could ever predict |
 | `by_component.csv`, `by_year.csv` | The same counts broken down; useful for the report and for spotting thin components |
-| `unmatched_recall_vehicles.csv` | Most-recalled make + model pairs with no complaint at all. Look here for spelling differences between the files |
+| `unmatched_recall_vehicles.csv` | Most-recalled make + model pairs with no complaint at all.|
 
 The exact training/validation/test rows and positives are printed by `run` and saved in
 `outputs/complaint/split_summary.csv`.
@@ -151,7 +148,7 @@ hover over variables or inspect DataFrames in the *Variables* panel and the *Deb
 After the setup in *Quick start* (libraries come from `requirements.txt`):
 
 ```powershell
-python -m supervised_pipeline.run --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 --horizon-days 730 --models dummy logreg linear_svm random_forest xgboost lightgbm hist_gb knn --sample 200000
+python -m supervised_pipeline.run --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 --horizon-days 730 --models dummy logreg linear_svm random_forest lightgbm hist_gb knn --sample 200000
 ```
 
 `--sample 200000` is optional: a random sample of complaints, for quicker experiments. Leave it out to use all
@@ -208,7 +205,7 @@ on test. Add `--sample 300000` for a quicker run on a smaller laptop. Results go
 
 1. **Only later recalls count.** A recall dated on or before the complaint can't be the
    "future" outcome, so it becomes a feature (`prior_recall_same_group`) instead.
-2. **Coverage window.** Rows whose look-ahead isn't fully covered by the recall file are dropped (see §1).
+2. **Coverage window.** Rows whose look-ahead isn't fully covered by the recall file are dropped (see #1 "Data" above).
 3. **Temporal split + purge gap.** Train on older rows and test on newer ones. Training rows must have their whole
    look-ahead end before the next split starts, so training labels never use test-period recalls. Each gap costs
    one look-ahead of data (two gaps in total), so use 10+ years of complaints.
@@ -216,7 +213,7 @@ on test. Add `--sample 300000` for a quicker run on a smaller laptop. Results go
    recalls on or before the complaint date.
 5. **Threshold tuned on validation**, never on test.
 6. **Model chosen on validation.** `model_comparison.csv` is sorted by `val_pr_auc` and marks the
-   `selected_on_val` model. Report that model's test score; don't pick whichever model looks best on test.
+   `selected_on_val` model. Best model is picked based on the validation score.
 7. **Preprocessing learned from training rows only.** TF-IDF vocabulary/IDF, SVD topics, one-hot categories,
    medians and scaling are fitted inside the model `Pipeline` on the fit split, and only applied to
    validation/test.
@@ -224,15 +221,47 @@ on test. Add `--sample 300000` for a quicker run on a smaller laptop. Results go
 **Checks and known limitations**
 
 * `--drop-features CMPL_TYPE` re-runs without the complaint-type code. Some codes (e.g. `RC`, `RP`) look tied to
-  recall or investigation activity, so check NHTSA's field description to see whether they could be assigned
-  after the fact. If scores drop sharply without it, investigate before trusting the result.
+  recall or investigation activity, they could be assigned after the fact.
 * The recall file is a snapshot taken today. If a campaign was later amended to add vehicles, those vehicles
   carry the campaign's original date, so a few labels and `prior_recall_same_group` values may reflect information
-  that wasn't public yet. This can't be fixed with these files; mention it as a limitation.
+  that wasn't public yet. Current data files do not provide this information. 
 
-## 7. Ideas for extensions / ablations
+## 7. Ablation study
 
-* Look-ahead sensitivity: 180 / 365 / 730 days.
-* `--drop-features MAKETXT MODELTXT` to test whether the model learns defect patterns or just memorises risky models.
+`ablation.py` retrains the tuned models (settings from `outputs/tuning/best_params.json`) with one feature group
+removed at a time, or with a different look-ahead. Data is loaded once, and every feature ablation at a given
+look-ahead uses the same test rows as its baseline, so the scores compare directly.
+
+```powershell
+# a) Feature ablations at 730 days (all experiments, random_forest + lightgbm)
+python ablation.py --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01
+
+# b) Look-ahead sensitivity
+python ablation.py --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 --horizons 180 365 730 --experiments baseline --output-dir outputs/ablation_horizon
+
+# c) Does make/model matter at each look-ahead?
+python ablation.py --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 --horizons 365 730 --experiments baseline no_make_model no_vehicle_identity --output-dir outputs/ablation_make_model
+```
+
+Experiments: `baseline`, `no_make_model`, `no_vehicle_identity` (make/model + counts keyed on them), `no_component`,
+`no_history_counts`, `no_prior_recall`, `no_cmpl_type`, `no_severity`, `no_text` (no narrative), `text_only`.
+Add `--sample 300000` for a quicker run; `--models` picks the models (default `random_forest lightgbm`).
+
+Results go to `outputs/ablation/`:
+
+| File | Contents |
+|---|---|
+| `ablation_results.csv` | One row per look-ahead × experiment × model: test PR-AUC with 95% bootstrap interval, `lift` (PR-AUC ÷ base rate), `delta_pr_auc` / `delta_pct` vs baseline with a paired 95% interval (`delta_lo`, `delta_hi`), precision@1%/5%, F1, split sizes and dates |
+| `ablation_summary.csv` | PR-AUC and change vs baseline, one row per experiment, one column per model |
+| `ablation_delta.png` | Change in PR-AUC vs baseline, with intervals |
+| `horizon_sensitivity.png` | PR-AUC, base rate and lift by look-ahead (when several are run) |
+
+**Interpreting the results.** A change whose interval (`delta_lo`, `delta_hi`) excludes 0 is larger than test-set
+noise. Across look-aheads, the test period, base rate and purge gap all change, hence we compare **lift** (PR-AUC ÷
+base rate) rather than raw PR-AUC. Dropping `MAKETXT`/`MODELTXT` doesn't hide the vehicle completely: the
+narrative complaint text often names it, and the history counts are keyed on it (`no_vehicle_identity` removes those counts too).
+
+## 8. Ideas for future extensions
+
 * Exclude recalls with `INFLUENCED_BY = 'MFR'`: they arguably can't be triggered by complaints.
-* Use topic clusters from your unsupervised work as extra features.
+* Use topic clusters from unsupervised work as extra features.
