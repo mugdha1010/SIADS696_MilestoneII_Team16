@@ -1,5 +1,7 @@
 # Unsupervised learning: clustering complaints, validated against later recalls
 
+> [← Project overview](../README.md)
+
 **Question.** Do NHTSA complaints naturally group by what owners describe, and do some of those groups
 turn out to be followed by recalls far more (or less) often than average?
 
@@ -11,7 +13,7 @@ recall dated after the complaint, compared with the baseline share over all comp
 
 | Notebook | What it does | Reads | Writes |
 |---|---|---|---|
-| `01_data_cleaning_and_preprocessing.ipynb` | Shared cleaning; maps components to categories | `df_recalls_raw.csv`, `df_complaints_raw.csv` | `df_complaints_categorized.csv`, `df_recalls_keep_multilabel.csv` |
+| `01_data_cleaning_and_preprocessing.ipynb` | Shared cleaning; maps components to categories | `data/df_recalls_raw.csv`, `data/df_complaints_raw.csv` | `data/df_complaints_categorized.csv`, `data/df_recalls_keep_multilabel.csv` |
 | `02_unsupervised_feature_engineering.ipynb` | Sentence embeddings (`all-MiniLM-L6-v2`, 384-dim) and 9 severity/equipment flags per complaint | `data/df_complaints_categorized.csv` | `data/features_unsupervised.parquet` |
 | `03_unsupervised_clustering.ipynb` | Stages 0-3 below: feature selection, tuning, final training, validation | `data/features_unsupervised.parquet`, `data/df_recalls_keep_multilabel.csv` | (results are in the notebook outputs) |
 
@@ -20,10 +22,11 @@ Clustering does not use it.
 
 ## How to run
 
-1. Install the packages (`requirements.txt` includes `hdbscan`, `umap-learn`, `sentence-transformers` and
-   `pyarrow`). From the repo root:
+1. Install the packages (this folder's `requirements.txt` includes `hdbscan`, `umap-learn`,
+   `sentence-transformers` and `pyarrow`):
 
    ```bash
+   cd "Unsupervised Learning"
    pip install -r requirements.txt
    ```
 
@@ -33,9 +36,22 @@ Clustering does not use it.
    !pip install -q umap-learn hdbscan sentence-transformers
    ```
 
-2. Download the data files from the team's shared drive, https://drive.google.com/drive/folders/1whCHsuR-tqLq3GS0tAFQcSIqAmU0Dlc4,
-   and put them in a `data/` folder (notebooks 02 and 03 use relative `data/` paths). Which files you need
-   depends on where you start:
+2. Create a `data/` folder next to the notebooks and put the data files from the team's shared drive,
+   https://drive.google.com/drive/folders/1whCHsuR-tqLq3GS0tAFQcSIqAmU0Dlc4, in it. All three notebooks read and
+   write `data/...`, relative to the folder they run from. `data/` is listed in `.gitignore`, so the files are never
+   committed.
+
+   ```bash
+   mkdir data        # inside the Unsupervised Learning folder
+   ```
+
+   In Colab, run this in a notebook cell instead:
+
+   ```python
+   !mkdir -p data
+   ```
+
+   Which files you need depends on where you start:
    * from the beginning: `df_recalls_raw.csv` and `df_complaints_raw.csv` (inputs to notebook 01);
    * to skip 01: `df_complaints_categorized.csv` (input to 02) and `df_recalls_keep_multilabel.csv` (also needed by 03);
    * to run only 03: `features_unsupervised.parquet` and `df_recalls_keep_multilabel.csv`.
@@ -43,8 +59,7 @@ Clustering does not use it.
    The folder also holds the raw NHTSA files (`FLAT_CMPL.txt`, `FLAT_RCL_POST_2010.txt`), their field
    documentation (`CMPL_doc`, `CMPL_doc.txt`, `RCL_doc.txt`), and files for the supervised component-classification notebooks
    (`features_single_label.csv`, `features_multilabel.csv`, `df_recalls_single_label.csv`) that clustering does not use.
-   Notebook 01 and the first cells of 02 are written for Colab and mount Google Drive; adjust those paths if
-   you run locally.
+   The first cell of notebooks 01 and 02 mounts Google Drive and only works in Colab; skip it if you run locally.
 3. Run `01`, then `02_unsupervised_feature_engineering`, then `03_unsupervised_clustering`, top to bottom.
 
 **Cost.** `03` is the heavy one: it transforms about 2.25M complaints through UMAP and fits K-means and
