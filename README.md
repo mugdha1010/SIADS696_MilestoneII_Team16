@@ -15,10 +15,10 @@ complaints anticipate the recalls, in two ways:
 | Path | Contents |
 |---|---|
 | `supervised_pipeline/` | The supervised pipeline (loading, labels, features, models, evaluation) |
-| `tune_models.py` | Hyperparameter tuning |
-| `ablation.py` | Ablation studies |
+| `supervised_pipeline/tune_models.py` | Hyperparameter tuning |
+| `supervised_pipeline/ablation.py` | Ablation studies |
 | `outputs/tuning/` | Saved tuning results: every trial per model, `best_params.json`, `tuned_test_results.csv` |
-| `eda_complaints_recalls.ipynb` | Exploratory charts |
+| `supervised_pipeline/eda_complaints_recalls.ipynb` | Exploratory charts |
 | `Unsupervised Learning/` | Unsupervised notebooks (run separately, in Google Colab or locally) |
 | `supervised_pipeline/requirements.txt` | Python libraries for the supervised pipeline |
 | `Unsupervised Learning/requirements.txt` | Python libraries for the unsupervised notebooks |
