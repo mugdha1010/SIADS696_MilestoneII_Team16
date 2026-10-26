@@ -23,4 +23,4 @@ complaints anticipate the recalls, in two ways:
 | `supervised_pipeline/requirements.txt` | Python libraries for the supervised pipeline |
 | `Unsupervised Learning/requirements.txt` | Python libraries for the unsupervised notebooks |
 
-Each folder has its own README with setup, data and run instructions.
+Each folder has its own README with setup, data and run instructions. Datasets can bee accessed here: https://drive.google.com/drive/u/1/folders/1BYG3Swd2tU-zUzTU7rzfyQw2UQJkvUCV. 
