@@ -3,10 +3,10 @@
 Run from the project's top folder:
 
     # feature ablations at the default 2-year look-ahead
-    python ablation.py --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01
+    python -m supervised_pipeline.ablation --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01
 
     # look-ahead sensitivity (baseline features only)
-    python ablation.py --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 \
+    python -m supervised_pipeline.ablation --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 \
         --horizons 180 365 730 --experiments baseline
 
 How it works

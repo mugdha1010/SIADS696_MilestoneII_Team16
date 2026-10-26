@@ -2,7 +2,7 @@
 
 Run from the project's top folder:
 
-    python tune_models.py --complaints data/complaints.csv --recalls data/recalls.csv \
+    python -m supervised_pipeline.tune_models --complaints data/complaints.csv --recalls data/recalls.csv \
         --min-date 2008-01-01 --models lightgbm hist_gb random_forest knn logreg --n-iter 20
 
 How it works

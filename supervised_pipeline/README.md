@@ -54,7 +54,7 @@ python -m supervised_pipeline.match_report --complaints data/complaints.csv --re
 python -m supervised_pipeline.run --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 --models dummy logreg linear_svm random_forest lightgbm hist_gb knn
 
 # d) Hyperparameter tuning (see #4 "Run" (tuning) below)
-python tune_models.py --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 --models knn lightgbm random_forest hist_gb --n-iter 10
+python -m supervised_pipeline.tune_models --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 --models knn lightgbm random_forest hist_gb --n-iter 10
 ```
 
 Results go to `outputs/` (see #4 "Run" below). On a laptop with 8 GB RAM, add `--sample 300000` to (c) and (d) and leave out
@@ -174,7 +174,7 @@ on test. Add `--sample 300000` for a quicker run on a smaller laptop. Results go
 `tuned_test_results.csv` (test scores of the tuned models). **The results of our tuning runs are already saved in
 `outputs/tuning/` in this repo**; re-running overwrites them.
 
-**EDA.** `eda_complaints_recalls.ipynb` (top folder) has failure-analysis and complaint ↔ recall charts.
+**EDA.** `eda_complaints_recalls.ipynb` (supervised_pipeline/eda_complaints_recalls.ipynb) has failure-analysis and complaint ↔ recall charts.
 
 ## 5. Module map
 
@@ -226,13 +226,13 @@ look-ahead uses the same test rows as its baseline, so the scores compare direct
 
 ```powershell
 # a) Feature ablations at 730 days (all experiments, random_forest + lightgbm)
-python ablation.py --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01
+python -m supervised_pipeline.ablation --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01
 
 # b) Look-ahead sensitivity
-python ablation.py --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 --horizons 180 365 730 --experiments baseline --output-dir outputs/ablation_horizon
+python -m supervised_pipeline.ablation --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 --horizons 180 365 730 --experiments baseline --output-dir outputs/ablation_horizon
 
 # c) Does make/model matter at each look-ahead?
-python ablation.py --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 --horizons 365 730 --experiments baseline no_make_model no_vehicle_identity --output-dir outputs/ablation_make_model
+python -m supervised_pipeline.ablation --complaints data/complaints.csv --recalls data/recalls.csv --min-date 2008-01-01 --horizons 365 730 --experiments baseline no_make_model no_vehicle_identity --output-dir outputs/ablation_make_model
 ```
 
 Experiments: `baseline`, `no_make_model`, `no_vehicle_identity` (make/model + counts keyed on them), `no_component`,

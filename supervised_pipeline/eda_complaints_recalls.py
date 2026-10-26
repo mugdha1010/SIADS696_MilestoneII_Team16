@@ -6,8 +6,10 @@
 # This notebook only **reads** data through the pipeline's loader (same cleaning and component harmonisation as
 # the models). It does not change the pipeline.
 #
-# Save it in the project's top folder (next to `README.md` and `supervised_pipeline/`), choose your Python
-# environment as the kernel, and run the cells top to bottom.
+# This is a copy of the notebook `eda_complaints_recalls.ipynb` in the `notebooks` folder, converted to a `.py` file for
+# VS Code's Interactive Window. The charts are the same, but the notebook's narrative text is removed. The notebook is easier 
+# to read, but this file can be run in a single pass and is easier to edit.
+#
 #
 # 1. Setup and loading
 # 2. Failure analysis (complaints)
@@ -24,6 +26,7 @@ HORIZON_DAYS = 730          # "recall within N days" used in section 4
 TOP_N = 12                  # how many components / makes to show in rankings
 
 # %%
+import os
 import sys
 from pathlib import Path
 import numpy as np
@@ -35,7 +38,7 @@ from scipy.stats import spearmanr
 # Make `import supervised_pipeline` work when the notebook sits in the project folder (or a subfolder of it)
 for p in [Path.cwd(), *Path.cwd().parents]:
     if (p / "supervised_pipeline").is_dir():
-        sys.path.insert(0, str(p)); break
+        sys.path.insert(0, str(p)); os.chdir(p); break
 
 # ---- chart style: one consistent, colour-blind-checked palette ----------------------
 PALETTE = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#6250d6", "#e34948"]
