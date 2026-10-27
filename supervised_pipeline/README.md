@@ -23,9 +23,9 @@ pip install -r supervised_pipeline/requirements.txt
 ```
 
 **2. Get the data.** The data files are too large for GitHub (1.5 GB and 300 MB), so they're shared separately.
-Download `complaints.csv` and `recalls.csv` from the team's shared drive:
+Download df_complaints_raw.csv and df_recalls_raw.csv from below shared drive folder and store them with names `complaints.csv` and `recalls.csv' in data folder :
 
-> **Shared drive folder:** https://drive.google.com/drive/folders/1qeWRvTDdtBdkwpXX5Q3eNKSWNIJn9jjZ
+> **Shared drive folder:** (https://drive.google.com/drive/u/1/folders/1BYG3Swd2tU-zUzTU7rzfyQw2UQJkvUCV)
 
 Create a folder named `data` in the top folder of the repo and put both files in it:
 
